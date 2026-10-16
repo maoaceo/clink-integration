@@ -1,0 +1,11 @@
+# Copy to /etc/ctyun-clink.env, set mode 600, set a unique real password locally.
+HOST=127.0.0.1
+PORT=8571
+CTYUN_DATA_DIR=/var/lib/ctyun-clink
+CTYUN_NATIVE_DIR=/opt/ctyun-clink/runtime/opt/ctg/CtyunClouddeskPublic
+CTYUN_NATIVE_STATE=/var/lib/ctyun-clink/native
+CTYUN_NATIVE_PERSISTENT=1
+CTYUN_CONNECTION_BACKEND=clink
+CTYUN_TEST_KEEPALIVE_ONLY=1
+CTYUN_BOOTSTRAP_PASSWORD=REPLACE_WITH_UNIQUE_STRONG_PASSWORD
+TZ=Asia/Shanghai

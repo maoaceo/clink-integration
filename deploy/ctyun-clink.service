@@ -1,0 +1,22 @@
+[Unit]
+Description=CtYun Dashboard official Clink multi-desktop manager
+After=network-online.target
+[Service]
+Type=simple
+User=ctyunclink
+Group=ctyunclink
+WorkingDirectory=/opt/ctyun-clink/app
+EnvironmentFile=/etc/ctyun-clink.env
+ExecStart=/usr/bin/node /opt/ctyun-clink/app/server.js
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ctyun-clink
+KillMode=control-group
+TimeoutStopSec=12
+[Install]
+WantedBy=multi-user.target
