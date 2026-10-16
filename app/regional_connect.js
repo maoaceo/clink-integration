@@ -1,5 +1,6 @@
 'use strict';
 async function regionalConnect(client,desktopId){
+ const {ensurePower}=require('./native_power_guard');
  if(String(client.loginInfo?.deviceType||client.deviceType)==='60')throw Error('原 Web 登录态需重新扫码授权 Linux 终端');
  const id=String(desktopId);
  const base='https://desk.ctyun.cn:8810';
@@ -16,6 +17,20 @@ async function regionalConnect(client,desktopId){
   const response=await fetch(host+path+(post?'':'?'+new URLSearchParams(data)),{method:post?'POST':'GET',headers:client.getSignedHeaders(post?{'Content-Type':'application/x-www-form-urlencoded'}:{}),body:post?new URLSearchParams(data).toString():undefined,signal:AbortSignal.timeout(20000)});
   const j=await response.json();if(j.code!==0)throw Error('区域连接接口拒绝 code='+j.code);return j.data||{};
  }
+ const isActive=()=>!client._nativeRequireWorker||client.workerRunning;
+ async function powerCheck(){
+  if(!isActive())throw Error('用户已停止连接');
+  const list=await request('/api/desktop/client/state',{desktopIds:JSON.stringify([{objId:id,objType:String(desktop.objType??0)}])},false);
+  const state=Array.isArray(list)?list.find(x=>String(x.desktopId||x.objId)===id):null;
+  await ensurePower({client,desktop,state,isActive,log:client._nativeLog||(()=>{}),operate:action=>request('/api/desktop/client/operate',{desktopId:id,operationType:action==='poweron'?'1':'18'},true)});
+  return state;
+ }
+ const bootDeadline=Date.now()+120000;
+ let power=await powerCheck();
+ while(power?.desktopState!=='ACTIVE'||power?.runningTask||power?.runningTaskName){
+  if(Date.now()>=bootDeadline)throw Error('桌面电源尚未就绪，延后重试');
+  client.metrics.status='booting';await new Promise(r=>setTimeout(r,5000));power=await powerCheck();
+ }
  let data=await request('/api/desktop/client/connectMaster',common,true);
  const deadline=Date.now()+120000;
  let nextConnectAllowed=0;
@@ -23,8 +38,7 @@ async function regionalConnect(client,desktopId){
   if(!client.workerRunning&&client._nativeRequireWorker)throw Error('用户已停止连接');
   client.metrics.status='booting';client.account.stats=client.account.stats||{};client.account.stats.keepAliveStatus='booting';
   await new Promise(r=>setTimeout(r,5000));
-  const state=await request('/api/desktop/client/state',{desktopIds:JSON.stringify([{objId:id,objType:String(desktop.objType??0)}])},false);
-  const own=Array.isArray(state)?state.find(x=>String(x.desktopId||x.objId)===id):null;
+  const own=await powerCheck();
   if(own?.desktopState==='ACTIVE'&&Date.now()>=nextConnectAllowed){
    // Same flow observed in the user's boot capture: ACTIVE then connectMaster again.
    data=await request('/api/desktop/client/connectMaster',common,true);

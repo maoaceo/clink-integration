@@ -62,7 +62,7 @@ class NativeAccountManager {
     const id=String(desktop.desktopId||desktop.objId);
     if(this.sessions.has(id)||owners.has(id)||(this.failures.get(id)||0)>Date.now())continue;
     owners.set(id,this);const peer=new this.client.constructor({...this.client.account,stats:{}});
-    peer.loginInfo=this.client.loginInfo;peer.deviceType=this.client.deviceType;peer.version=this.client.version;peer.workerRunning=true;peer._nativeRequireWorker=true;peer._nativeDesktopId=id;this.current=peer;
+    peer.loginInfo=this.client.loginInfo;peer.deviceType=this.client.deviceType;peer.version=this.client.version;peer.workerRunning=true;peer._nativeRequireWorker=true;peer._nativeDesktopId=id;peer._nativePowerOwner=this.client;peer._nativeLog=this.log;this.current=peer;
     let row=null;
     try{
      this.log('KeepAlive',`[Clink多桌面] ${id} 排队获取参数`,'info');
@@ -89,7 +89,7 @@ class NativeAccountManager {
     }catch(e){
      if(!row&&owners.get(id)===this)owners.delete(id);
      this.failures.set(id,Date.now()+60000);
-     if(this.valid(g)){this.client.account.stats.lastError='原生连接未就绪，60秒后重试';this.log('KeepAlive',`[Clink多桌面] ${id} 参数或启动失败，已退避60秒`,'warning');}
+     if(this.valid(g)){const reason=['AUTOBOOT_DISABLED','MANUAL_SHUTDOWN'].includes(e.code)?e.message:'原生连接未就绪，60秒后重试';this.client.account.stats.lastError=reason;this.log('KeepAlive',`[Clink多桌面] ${id} ${reason}`,'warning');}
     }finally{this.current=null;}
    }
   }catch(e){if(this.enabled)this.log('KeepAlive','[Clink多桌面] 同步失败，将延后重试','warning');}
