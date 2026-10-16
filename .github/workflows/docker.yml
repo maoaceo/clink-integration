@@ -1,0 +1,110 @@
+name: Build and publish Clink Docker images
+on:
+  push:
+    branches: [clink-integration, main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies and test core logic
+        run: |
+          npm ci --omit=dev --ignore-scripts
+          node tests/syntax_check.js
+          node tests/native/account_manager.test.js
+          node tests/native/power_guard.test.js
+          python3 scripts/prepare_runtime.py --arch ${{ matrix.arch }} --verify-only
+      - name: Image names
+        id: names
+        shell: bash
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+          echo "shortsha=${GITHUB_SHA:0:12}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build local image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/${{ matrix.arch }}
+          load: true
+          tags: clink-smoke:local
+          cache-from: type=gha,scope=clink-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=clink-${{ matrix.arch }}
+      - name: Container HTTP and access-control smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$PASSWORD"
+          docker run -d --name clink-smoke --shm-size=256m -p 127.0.0.1:18571:8571 -e CTYUN_BOOTSTRAP_PASSWORD="$PASSWORD" clink-smoke:local
+          trap 'docker logs --tail 50 clink-smoke; docker rm -f clink-smoke' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:18571/ -o /dev/null; then break; fi
+            sleep 2
+          done
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18571/)" = 200
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18571/desktop-view)" = 403
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18571/api/config/export)" = 403
+          docker exec clink-smoke sh -c 'test -x "$CTYUN_NATIVE_DIR/clouddesktop-qml"; command -v xvfb-run; command -v python3'
+          docker exec clink-smoke python3 -c 'import os,subprocess; from pathlib import Path; p=Path(os.environ["CTYUN_NATIVE_DIR"]); e=dict(os.environ,LD_LIBRARY_PATH=str(p/"lib")); targets=[p/"clouddesktop-qml",p/"plugins/platforms/libqxcb.so"]; results=[subprocess.run(["ldd",str(t)],env=e,capture_output=True,text=True) for t in targets]; [print(r.stdout,r.stderr) for r in results]; assert all(r.returncode==0 and "not found" not in r.stdout for r in results)'
+      - name: Push architecture-specific image
+        shell: bash
+        env:
+          IMAGE: ${{ steps.names.outputs.image }}
+          SHORTSHA: ${{ steps.names.outputs.shortsha }}
+        run: |
+          set -euo pipefail
+          docker tag clink-smoke:local "$IMAGE:sha-$SHORTSHA-${{ matrix.arch }}"
+          docker push "$IMAGE:sha-$SHORTSHA-${{ matrix.arch }}"
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish multi-architecture manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          SHA="${GITHUB_SHA:0:12}"
+          TAGS=(--tag "$IMAGE:sha-$SHA")
+          if [[ "$GITHUB_REF" == refs/heads/clink-integration || "$GITHUB_REF" == refs/heads/main ]]; then TAGS+=(--tag "$IMAGE:latest"); fi
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAGS+=(--tag "$IMAGE:${GITHUB_REF_NAME}"); fi
+          docker buildx imagetools create "${TAGS[@]}" "$IMAGE:sha-$SHA-amd64" "$IMAGE:sha-$SHA-arm64"
+          docker buildx imagetools inspect "$IMAGE:sha-$SHA"
+          echo "### Published: $IMAGE:sha-$SHA (amd64 + arm64)" >> "$GITHUB_STEP_SUMMARY"
