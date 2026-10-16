@@ -1,0 +1,15 @@
+{
+  "passed": 202,
+  "failed": 2,
+  "failure_excerpt": [
+    "  FAIL  侧车可被真实拉起并跑通 IPC（无凭据时报\"未就绪\"而非崩溃）",
+    "        凭据未就绪时未给出明确原因（实际: RuntimeError: 侧车内核不可用: ModuleNotFoundError: No module named 'requests' ModuleNotFoundError: No module named 'requests'）",
+    "  FAIL  签约常量内置：覆盖文件缺失时，侧车必须靠内置公开常量正常加载（开箱即用）",
+    "        覆盖文件缺失时必须回落到内置公开常量（public_credentials.json）并加载成功，实际 credentials=missing，原因: RuntimeError: 侧车内核不可用: ModuleNotFoundError: No module named 'requests'（本机如提示缺 Python 包，请 pip install -r app/ecloud_engine/requirements.txt）",
+    "  FAIL  签约常量内置：覆盖文件缺失时，侧车必须靠内置公开常量正常加载（开箱即用）",
+    "        覆盖文件缺失时必须回落到内置公开常量（public_credentials.json）并加载成功，实际 credentials=missing，原因: RuntimeError: 侧车内核不可用: ModuleNotFoundError: No module named 'requests'（本机如提示缺 Python 包，请 pip install -r app/ecloud_engine/requirements.txt）",
+    "        + actual - expected",
+    "        "
+  ],
+  "scope": "upstream tests on adapted build; not all pass"
+}

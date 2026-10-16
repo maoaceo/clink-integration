@@ -1,0 +1,87 @@
+{
+  "totalAccounts": 4,
+  "totalDesktops": 5,
+  "allOnline": true,
+  "noReconnectDuring65s": true,
+  "heartbeatAdvancedAll": true,
+  "snapshot": [
+    {
+      "id": "account-example",
+      "managed": true,
+      "limit": 5,
+      "online": 1,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-1",
+          "status": "online",
+          "connected": true,
+          "connectedAt": 1792121356126,
+          "lastHeartbeatTime": "2026-10-16 11:39:35",
+          "lastNativeState": "native-state=1 code=0",
+          "backend": "official-clink"
+        }
+      ]
+    },
+    {
+      "id": "account-example",
+      "managed": true,
+      "limit": 5,
+      "online": 1,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-2",
+          "status": "online",
+          "connected": true,
+          "connectedAt": 1792121355904,
+          "lastHeartbeatTime": "2026-10-16 11:39:35",
+          "lastNativeState": "native-state=1 code=0",
+          "backend": "official-clink"
+        }
+      ]
+    },
+    {
+      "id": "account-example",
+      "managed": true,
+      "limit": 5,
+      "online": 1,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-3",
+          "status": "online",
+          "connected": true,
+          "connectedAt": 1792121356124,
+          "lastHeartbeatTime": "2026-10-16 11:39:35",
+          "lastNativeState": "native-state=1 code=0",
+          "backend": "official-clink"
+        }
+      ]
+    },
+    {
+      "id": "account-example",
+      "managed": true,
+      "limit": 5,
+      "online": 2,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-4",
+          "status": "online",
+          "connected": true,
+          "connectedAt": 1792121355874,
+          "lastHeartbeatTime": "2026-10-16 11:39:35",
+          "lastNativeState": "native-state=1 code=0",
+          "backend": "official-clink"
+        },
+        {
+          "desktopId": "desktop-example-5",
+          "status": "online",
+          "connected": true,
+          "connectedAt": 1792121694147,
+          "lastHeartbeatTime": "2026-10-16 11:39:35",
+          "lastNativeState": "native-state=1 code=0",
+          "backend": "official-clink"
+        }
+      ]
+    }
+  ],
+  "prior_toggle_recovery_had_transient_disconnect": true
+}

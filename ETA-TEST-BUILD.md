@@ -1,0 +1,1 @@
+Local-only test build. Official Clink backend enabled by default. Legacy WebSocket not used unless explicitly selected. Credential-exporting routes disabled. SavedLoginInfo AEAD-encrypted. QR-to-native certificate compatibility still requires user QR authorization. Not a full security audit.

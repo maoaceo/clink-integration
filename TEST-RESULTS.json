@@ -1,0 +1,37 @@
+{
+  "deployment": "local-only-server-test",
+  "service": "ctyun-clink-test.service",
+  "listen": "127.0.0.1:8571",
+  "dedicated_user": "ctyunclink",
+  "admin_login": "passed",
+  "default_password_rejected": true,
+  "guest_qr_request_rejected": true,
+  "credential_routes_disabled": true,
+  "qr_generation": "passed",
+  "qr_user_confirmation": "pending",
+  "web_login_identity_to_clink": "verified_after_linux_type11_reauth",
+  "native_worker_test": {
+    "identity_source": "user_phone_existing_login_over_encrypted_stdin",
+    "dedicated_service_user": true,
+    "duration_seconds": 15,
+    "connected_state": 2,
+    "latency_notifications": 7,
+    "native_exit": 0,
+    "temporary_session_directory_count_after_exit": 0
+  },
+  "regression": {
+    "passed": 202,
+    "failed": 2,
+    "failure_scope": "upstream mobile-public-cloud Python sidecar requires Crypto namespace; unrelated to tested CtYun Clink worker",
+    "all_tests_passed": false
+  },
+  "public_port_opened": false,
+  "long_term_desktop_session_running": true,
+  "full_security_audit_completed": false,
+  "current_priority_report": "merged-stability-result.json",
+  "per_account_desktop_limit": 5,
+  "real_scene": "4 accounts, 5 desktops; one account owns 2 desktops",
+  "standalone_test_service_active": false,
+  "manager_unit_tests": "passed",
+  "transient_disconnect_after_manual_reenable": true
+}

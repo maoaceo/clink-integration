@@ -1,0 +1,13 @@
+{
+  "page_http": 200,
+  "qr_guest_http": 401,
+  "desktop_credential_route_http": 403,
+  "export_http": 403,
+  "registration_http": 403,
+  "default_password_rejected": true,
+  "admin_login_success": true,
+  "accounts_http": 200,
+  "no_credentials_in_accounts": true,
+  "qr_generate_http": 200,
+  "qr_generated": true
+}

@@ -1,0 +1,81 @@
+{
+  "both_online_before": true,
+  "single_stop_only_target": true,
+  "first_connectedAt_unchanged_after_stop": true,
+  "both_restored": true,
+  "first_not_reconnected": true,
+  "persistent_over_60s": false,
+  "heartbeat_updated_both": false,
+  "final": {
+    "desktop-example-4": {
+      "desktopId": "desktop-example-4",
+      "status": "online",
+      "connected": true,
+      "connectedAt": 1792121355874,
+      "lastHeartbeatTime": "2026-10-16 11:34:35",
+      "lastNativeState": "native-state=1 code=0",
+      "backend": "official-clink"
+    },
+    "desktop-example-5": {
+      "desktopId": "desktop-example-5",
+      "connected": false,
+      "status": "waiting",
+      "backend": "official-clink"
+    }
+  },
+  "accounts": [
+    {
+      "accountId": "account-example",
+      "online": 1,
+      "max": 5,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-1",
+          "connected": true,
+          "status": "online"
+        }
+      ]
+    },
+    {
+      "accountId": "account-example",
+      "online": 1,
+      "max": 5,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-2",
+          "connected": true,
+          "status": "online"
+        }
+      ]
+    },
+    {
+      "accountId": "account-example",
+      "online": 1,
+      "max": 5,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-3",
+          "connected": true,
+          "status": "online"
+        }
+      ]
+    },
+    {
+      "accountId": "account-example",
+      "online": 1,
+      "max": 5,
+      "desktops": [
+        {
+          "desktopId": "desktop-example-4",
+          "connected": true,
+          "status": "online"
+        },
+        {
+          "desktopId": "desktop-example-5",
+          "connected": false,
+          "status": "waiting"
+        }
+      ]
+    }
+  ]
+}

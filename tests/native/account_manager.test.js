@@ -1,0 +1,10 @@
+const assert=require('assert');
+const path=require('path');
+const root=path.resolve(__dirname,'../../app');
+let active=0,peak=0,starts=[],rows=[],paramCalls=[];
+require.cache[require.resolve(root+'/clink_backend')]={exports:{runNative(peer,d){active++;peak=Math.max(peak,active);starts.push(String(d.desktopId));let resolve;const promise=new Promise(r=>resolve=r);rows.push({peer,d,resolve});peer.endCurrentSession=()=>{if(peer._ended)return;peer._ended=true;peer.wsAlive=false;active--;resolve({success:true});};setTimeout(()=>{if(!peer._ended){peer.wsAlive=true;peer.metrics.status='online';}},30);return promise;}}};
+require.cache[require.resolve(root+'/regional_connect')]={exports:{async regionalConnect(peer,id){assert(active===0||rows[rows.length-1].peer.wsAlive,'next parameters before prior native connection');paramCalls.push(id);return {};}}};
+const {NativeAccountManager}=require(root+'/native_account_manager');
+class Fake {constructor(a){this.account=a;this.loginInfo={};this.metrics={};this.workerRunning=false;}async getDesktops(){this.desktopsCache=this.account.desktops;return this.desktopsCache;}}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{const a={id:'test',enabled:true,features:{keepAlive:true},stats:{},desktops:Array.from({length:7},(_,i)=>({desktopId:String(i+1)}))};const c=new Fake(a);const m=new NativeAccountManager(c,()=>{},{settleMs:0,betweenMs:0,handshakeTimeoutMs:2000});m.enabled=true;c.workerRunning=true;await Promise.all([m.tick(),m.tick()]);assert.equal(starts.length,5);assert.equal(new Set(starts).size,5);assert.equal(peak,5);assert.equal(c.metrics.nativeOnlineCount,5);await m.tick();assert.equal(starts.length,5);a.desktops[0].keepaliveEnabled=false;m.stopDesktop('1');await sleep(20);assert(!m.sessions.has('1'));m.stop();await sleep(30);assert.equal(active,0);assert.equal(m.sessions.size,0);assert.equal(c.wsAlive,false);console.log('PASS: 5-limit; single launch loop; connected-before-next-params; duplicate guard; stop-one; stop-all; truthful aggregate status');})().catch(e=>{console.error(e.stack);process.exit(1)});

@@ -1,0 +1,26 @@
+{
+  "service": "active",
+  "bothConnected": true,
+  "recentActivityBoth": true,
+  "overlapSeconds": 154.0,
+  "desktops": {
+    "desktop-1": {
+      "desktopId": "desktop-example-4",
+      "connected": true,
+      "connectedAt": 1792120266324,
+      "delayCount": 84,
+      "lastActivity": 1792120433696
+    },
+    "desktop-2": {
+      "desktopId": "desktop-example-5",
+      "connected": true,
+      "connectedAt": 1792120280193,
+      "delayCount": 77,
+      "lastActivity": 1792120433603
+    }
+  },
+  "additionalDelayNotifications": {
+    "desktop-1": 28,
+    "desktop-2": 28
+  }
+}
