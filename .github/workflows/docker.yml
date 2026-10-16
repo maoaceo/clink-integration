@@ -48,6 +48,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build local image
         uses: docker/build-push-action@v6
         with:
@@ -83,6 +88,8 @@ jobs:
           set -euo pipefail
           docker tag clink-smoke:local "$IMAGE:sha-$SHORTSHA-${{ matrix.arch }}"
           docker push "$IMAGE:sha-$SHORTSHA-${{ matrix.arch }}"
+          docker tag clink-smoke:local "lusean23/clink-integration:sha-$SHORTSHA-${{ matrix.arch }}"
+          docker push "lusean23/clink-integration:sha-$SHORTSHA-${{ matrix.arch }}"
   publish:
     needs: build
     runs-on: ubuntu-24.04
@@ -96,6 +103,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Publish multi-architecture manifest
         shell: bash
         run: |
@@ -107,4 +119,11 @@ jobs:
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then TAGS+=(--tag "$IMAGE:${GITHUB_REF_NAME}"); fi
           docker buildx imagetools create "${TAGS[@]}" "$IMAGE:sha-$SHA-amd64" "$IMAGE:sha-$SHA-arm64"
           docker buildx imagetools inspect "$IMAGE:sha-$SHA"
+          HUB="lusean23/clink-integration"
+          HUB_TAGS=(--tag "$HUB:sha-$SHA")
+          if [[ "$GITHUB_REF" == refs/heads/clink-integration || "$GITHUB_REF" == refs/heads/main ]]; then HUB_TAGS+=(--tag "$HUB:latest"); fi
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then HUB_TAGS+=(--tag "$HUB:${GITHUB_REF_NAME}"); fi
+          docker buildx imagetools create "${HUB_TAGS[@]}" "$HUB:sha-$SHA-amd64" "$HUB:sha-$SHA-arm64"
+          docker buildx imagetools inspect "$HUB:sha-$SHA"
           echo "### Published: $IMAGE:sha-$SHA (amd64 + arm64)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Docker Hub: lusean23/clink-integration:sha-$SHA" >> "$GITHUB_STEP_SUMMARY"

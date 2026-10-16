@@ -24,3 +24,7 @@ ctyun.env自行设置 CTYUN_BOOTSTRAP_PASSWORD=唯一强密码，不上传GitHub
 如果拉取提示denied，需在仓库关联的Packages中把镜像Visibility设为Public，或用有read:packages权限的账号登录GHCR。SSH代码推送权限并不等于可通过API修改Package权限。
 
 如果Actions未运行，检查仓库Actions是否启用；如果ARM runner不可用或配额不足，构建会如实失败，不会提前发布多架构latest。官方运行包版权归原厂，发布镜像前应确认你的分发使用权。
+
+## Docker Hub
+
+同时发布 lusean23/clink-integration:latest。仓库 Actions Secrets 必须设置 DOCKERHUB_USERNAME=lusean23 和 DOCKERHUB_TOKEN（Docker Hub 写入权限 Access Token）。本机 docker login 不会授权 GitHub runner。两个架构测试通过后才合并 latest；Token 不入库。
