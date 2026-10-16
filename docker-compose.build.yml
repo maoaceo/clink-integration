@@ -1,0 +1,18 @@
+services:
+  ctyun-dashboard:
+    build: .
+    image: clink-integration:local
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8571:8571"
+    environment:
+      TZ: Asia/Shanghai
+      CTYUN_BOOTSTRAP_PASSWORD: "${CTYUN_BOOTSTRAP_PASSWORD:?Set a unique strong admin password in .env}"
+      CTYUN_CONNECTION_BACKEND: clink
+      CTYUN_NATIVE_PERSISTENT: "1"
+      CTYUN_TEST_KEEPALIVE_ONLY: "1"
+    volumes:
+      - ctyun-data:/app/data
+    shm_size: 256mb
+volumes:
+  ctyun-data:

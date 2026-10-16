@@ -2,6 +2,12 @@
 
 基于 [muyicn/ctyun-dashboard](https://github.com/muyicn/ctyun-dashboard) 的实验适配，使用官方 Linux 客户端原生 Clink 主通道替代天翼云 WebSocket 保活。
 
+## Docker 快速使用
+
+已发布双架构镜像：`lusean23/clink-integration:latest`（备用 GHCR）。
+
+完整的安装、初始密码、国内网络、公网端口、日志、升级和数据备份说明见 **[Docker 部署教程](DOCKER-DEPLOY.md)**。直接部署不需要下载官方资源分片；默认 Compose 直接拉取镜像，源码构建另用 `docker-compose.build.yml`。
+
 ## 当前功能
 
 - 官方 App 二维码登录，Linux 终端身份。
@@ -13,7 +19,7 @@
 
 已实测 4 账号 5 桌面同时连接（其中同账号 2 台）；每账号 5 并发仅做逻辑模拟测试。SDK 心跳未单独解码，状态通过连接事件和主通道延迟通知验证。恢复连接曾出现服务端断开，不能保证永不掉线或不抢占同桌面的其他终端。
 
-详见 [合并说明](MERGED-WEB-MANAGER.md)、[部署测试说明](DEPLOYMENT-TEST.md) 和脱敏验证 JSON。历史报告按阶段保留，最新 merged-stability-result.json 优先。Windows 版未实测；Dockerfile 已新增原生运行依赖与官方包解包流程，但尚未整镜像构建测试；Windows 启动器不是已验证的Clink部署方案。
+详见 [合并说明](MERGED-WEB-MANAGER.md)、[部署测试说明](DEPLOYMENT-TEST.md) 和脱敏验证 JSON。历史报告按阶段保留，最新 merged-stability-result.json 优先。Windows 版未实测；双架构镜像已通过GitHub构建及容器smoke；amd64已在国内服务器验证容器原生入口，真实账号会话仍按目标环境检查；Windows 启动器不是已验证的Clink部署方案。
 
 ## 安全与依赖
 

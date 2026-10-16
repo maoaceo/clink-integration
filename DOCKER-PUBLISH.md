@@ -30,3 +30,5 @@ ctyun.env自行设置 CTYUN_BOOTSTRAP_PASSWORD=唯一强密码，不上传GitHub
 同时发布 lusean23/clink-integration:latest。仓库 Actions Secrets 必须设置 DOCKERHUB_USERNAME=lusean23 和 DOCKERHUB_TOKEN（Docker Hub 写入权限 Access Token）。本机 docker login 不会授权 GitHub runner。两个架构测试通过后才合并 latest；Token 不入库。
 
 Docker Hub 用户名已固定为公开用户名 lusean23，只需仓库 Actions Secret DOCKERHUB_TOKEN；不再强制要求 DOCKERHUB_USERNAME。
+
+用户部署请优先阅读 [DOCKER-DEPLOY.md](DOCKER-DEPLOY.md)。DockerHub登录只需仓库的DOCKERHUB_TOKEN，用户名固定lusean23；前文要求DOCKERHUB_USERNAME的段落为历史配置。
