@@ -16,3 +16,8 @@ app/ecloud_engine/credentials.json
 analysis
 .workbuddy
 .workbuddy-ai
+
+.runtime-cache
+.env
+.env.*
+runtime

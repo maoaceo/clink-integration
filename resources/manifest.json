@@ -1,0 +1,67 @@
+{
+  "note": "Unmodified official vendor installers provided by user; vendor rights remain with vendor. No credentials included.",
+  "packages": {
+    "amd64": {
+      "filename": "CtyunClouddeskPublic-x86-64-20260812062844-Release-204010003-1346.deb",
+      "sha256": "61840ae48b70133844327c400da6f25fab1bf7f477225fccb319ff14df19f18a",
+      "parts": [
+        {
+          "name": "client.deb.part00",
+          "size": 41943040,
+          "sha256": "5401cd63748c5d6bd669373655224612bb88e257b18cb8cbb52ab9aa8a63f47a"
+        },
+        {
+          "name": "client.deb.part01",
+          "size": 41943040,
+          "sha256": "3c770abb40dfc927c2647a234468c05ff35d69dae5c8c050d1c3af13db063ace"
+        },
+        {
+          "name": "client.deb.part02",
+          "size": 41943040,
+          "sha256": "fca2894f2fe754b225991ec9c0e6b5110238ffd7a8f4b6593c393ccd38f2e37c"
+        },
+        {
+          "name": "client.deb.part03",
+          "size": 41943040,
+          "sha256": "1ec7c8d9b81585db0668d6896a974a6a7d45f2a804b639696decdc9f44e8471d"
+        },
+        {
+          "name": "client.deb.part04",
+          "size": 8089098,
+          "sha256": "e80aaef21722c49bfa23b150e796011951dc96b92fbecb32d5e1e32951d6bd04"
+        }
+      ]
+    },
+    "arm64": {
+      "filename": "CtyunClouddeskPublic-arm64-20260812064445-Release-204010003-Ark5-1347.deb",
+      "sha256": "f6fc6b84018d3ea7941d5a92f9de5db943a30e04c05ff7746011b6be7740ad17",
+      "parts": [
+        {
+          "name": "client.deb.part00",
+          "size": 41943040,
+          "sha256": "599b718c3d5206e3a4a37bca2fc786226556b9cb874dd8ff0ba99ad1a00e0f21"
+        },
+        {
+          "name": "client.deb.part01",
+          "size": 41943040,
+          "sha256": "e85a6d973496a2871e14c392f22eea912936b9de8a4a0fb9843a59d62c556cc1"
+        },
+        {
+          "name": "client.deb.part02",
+          "size": 41943040,
+          "sha256": "9c25fd21ae633cbc5386ca3f9406e8e48d1964253a764e838c4235b95e032d7c"
+        },
+        {
+          "name": "client.deb.part03",
+          "size": 41943040,
+          "sha256": "f821bff3aa60330102e48ae03706faf303550274f42c4723e684ee030ccbdd96"
+        },
+        {
+          "name": "client.deb.part04",
+          "size": 487684,
+          "sha256": "3d2abcc6d90597921dd7a1f576cdcd034c9fdf641788a34b1979fd00d6000c0b"
+        }
+      ]
+    }
+  }
+}

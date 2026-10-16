@@ -57,3 +57,5 @@ session.json
 auth_sessions.json
 app_config.json
 app/ecloud_engine/public_credentials.json
+
+.runtime-cache/
